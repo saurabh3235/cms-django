@@ -37,6 +37,7 @@ setup(
         "idna",
         "lxml",
         "psycopg2-binary",
+        "pycryptodome",
         "python-dateutil",
         "requests",
         "rules",
