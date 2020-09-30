@@ -29,22 +29,29 @@ class PushNotificationView(PermissionRequiredMixin, TemplateView):
     push_sender = PushNotificationSender()
 
     def get(self, request, *args, **kwargs):
+        print(kwargs.get("push_notification_id"))
         push_notification = PushNotification.objects.filter(
             id=kwargs.get("push_notification_id")
         ).first()
         region = Region.objects.get(slug=kwargs.get("region_slug"))
         language = Language.objects.get(code=kwargs.get("language_code"))
-        if push_notification:
+        num_languages = len(region.languages)
+        if push_notification is not None:
             pn_form = PushNotificationForm(instance=push_notification)
-            PNTFormset = modelformset_factory(PushNotificationTranslation, form=PushNotificationTranslationForm, max_num=(len(region.languages)-1))
+            PNTFormset = modelformset_factory(PushNotificationTranslation, form=PushNotificationTranslationForm, max_num=num_languages, extra=num_languages)
             pnt_formset = PNTFormset(queryset=push_notification.translations.order_by("language"))
+            print("loading")
         else:
+            pn_form = PushNotificationForm()
             initial_data = []
             for lang in region.languages:
                 lang_data = {"language": lang.id}
                 initial_data.append(lang_data)
             PNTFormset = PushNotificationForm()
-            pnt_formset = modelformset_factory(PushNotificationTranslation, form=PushNotificationTranslationForm, max_num=(len(region.languages)-1))(initial=initial_data)
+            pnt_formset = modelformset_factory(PushNotificationTranslation, form=PushNotificationTranslationForm, max_num=num_languages, extra=num_languages)(initial=initial_data)
+            print("new")
+
+        print(pnt_formset)
 
         return render(request, self.template_name, {
             **self.base_context,
@@ -67,9 +74,11 @@ class PushNotificationView(PermissionRequiredMixin, TemplateView):
 
         region = Region.objects.get(slug=kwargs.get("region_slug"))
         language = Language.objects.get(code=kwargs.get("language_code"))
+        num_languages = len(region.languages)
 
-        PushNewsFormset = modelformset_factory(PushNotificationTranslation, form=PushNotificationTranslationForm, max_num=(len(region.languages)-1))
+        PushNewsFormset = modelformset_factory(PushNotificationTranslation, form=PushNotificationTranslationForm, max_num=num_languages)
         pnt_formset = PushNewsFormset(request.POST)
+        print(pnt_formset)
         pn_form = PushNotificationForm(request.POST)
         if pn_form.is_valid():
             push_notification = pn_form.save(commit=False)
