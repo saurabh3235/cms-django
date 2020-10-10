@@ -42,9 +42,6 @@
              <input type="submit" name="submit_save" class="{% if public %}bg-blue-500 hover:bg-blue-600{% else %}bg-gray-400 hover:bg-gray-500{% endif %} cursor-pointer text-white font-bold py-3 px-4 rounded mr-2" value="{% trans 'Save' %}" />
              <input type="submit" name="submit_send" class="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded" value="{% trans 'Save & Send' %}" />
         </div>
-        {% for key,value in test.items %}
-            {{key}}
-        {% endfor %}
         <div class="w-2/3 flex flex-wrap flex-col pr-2 tabbed">
             {{page_form.errors}}
             {{page_translation_form.errors}}
@@ -62,7 +59,7 @@
             <figure>
             {{ pnt_formset.management_form }}
             {% for form in pnt_formset %}
-                <div id="tab-{{ form.initial.language }}" class="w-full mb-4 rounded border-2 border-blue-500 bg-white flex-auto {% if form.initial.language != language.id %}hidden{% endif %}">
+                <div id="tab-{{ form.language.value }}" class="w-full mb-4 rounded border-2 border-blue-500 bg-white flex-auto {% if form.language.value|add:0 != language.id|add:0 %}hidden{% endif %}">
                     <div class="w-full p-4">
                         {{push_notification_translation_form.errors}}
                         <div class="w-full p-4 mb-4 rounded border border-solid border-gray-200 shadow bg-white">
