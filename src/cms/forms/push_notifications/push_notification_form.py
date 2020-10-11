@@ -7,23 +7,15 @@ class PushNotificationForm(forms.ModelForm):
     """
     Form for creating and modifying push notification objects
     """
-
     class Meta:
         model = PushNotification
         fields = ["channel"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
 
 class PushNotificationTranslationForm(forms.ModelForm):
     """
     Form for creating and modifying push notification translation objects
     """
-
     class Meta:
         model = PushNotificationTranslation
         fields = ["title", "text", "language"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)

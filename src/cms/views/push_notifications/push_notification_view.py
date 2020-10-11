@@ -36,6 +36,8 @@ class PushNotificationView(PermissionRequiredMixin, TemplateView):
         language = Language.objects.get(code=kwargs.get("language_code"))
         num_languages = len(region.languages)
         if push_notification is not None:
+            print("loading push notification id")
+            print(push_notification.id)
             pn_form = PushNotificationForm(instance=push_notification)
             PNTFormset = modelformset_factory(PushNotificationTranslation, form=PushNotificationTranslationForm, max_num=num_languages, extra=3)
             pnt_formset = PNTFormset(queryset=PushNotificationTranslation.objects.filter(push_notification=pn_form.instance).order_by("language"))
@@ -59,6 +61,9 @@ class PushNotificationView(PermissionRequiredMixin, TemplateView):
 
     # pylint: disable=too-many-branches,unused-argument
     def post(self, request, *args, **kwargs):
+        push_notification = PushNotification.objects.filter(
+            id=kwargs.get("push_notification_id")
+        ).first()
 
         if not request.user.has_perm("cms.edit_push_notifications"):
             raise PermissionDenied
@@ -73,7 +78,7 @@ class PushNotificationView(PermissionRequiredMixin, TemplateView):
 
         PushNewsFormset = modelformset_factory(PushNotificationTranslation, form=PushNotificationTranslationForm, max_num=num_languages)
         pnt_formset = PushNewsFormset(request.POST)
-        pn_form = PushNotificationForm(request.POST)
+        pn_form = PushNotificationForm(request.POST, instance=push_notification)
         if pn_form.is_valid():
             push_notification = pn_form.save(commit=False)
             push_notification.region = region
@@ -81,6 +86,7 @@ class PushNotificationView(PermissionRequiredMixin, TemplateView):
 
             for form in pnt_formset:
                 form.instance.push_notification = push_notification
+                print(form.instance)
                 if not form.is_valid():
                     continue
                 form.save()

@@ -16,6 +16,7 @@ from .models import Page
 from .models import PageTranslation
 from .models import POI
 from .models import POITranslation
+from .models import PushNotificationChannel
 from .models import Region
 from .models import RecurrenceRule
 from .models import UserMfa
@@ -32,6 +33,7 @@ admin.site.register(Page)
 admin.site.register(PageTranslation)
 admin.site.register(POI)
 admin.site.register(POITranslation)
+admin.site.register(PushNotificationChannel)
 admin.site.register(Region)
 admin.site.register(RecurrenceRule)
 admin.site.register(UserMfa)

@@ -1,5 +1,5 @@
 from django.db import models
-
+from .push_notification_channel import PushNotificationChannel
 
 class PushNotification(models.Model):
     """
@@ -25,7 +25,7 @@ class PushNotification(models.Model):
     region = models.ForeignKey(
         "Region", related_name="push_notifications", on_delete=models.CASCADE
     )
-    channel = models.CharField(max_length=60)
+    channel = models.ForeignKey(PushNotificationChannel, related_name="push_notifications", on_delete=models.CASCADE)
     draft = models.BooleanField(default=True)
     sent_date = models.DateTimeField(null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)

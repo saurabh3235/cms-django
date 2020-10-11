@@ -93,8 +93,10 @@
             </ul>
             <div class="w-full mb-4 rounded border-2 border-solid border-blue-500 shadow bg-white">
                 <div class="w-full p-4">
-                    <span class="font-bold mb-2 mt-4 block">Source Language</span>
-                    {{ push_notification_form }}
+                    <span class="font-bold mb-2 mt-4 block">Channel</span>
+                    {{ push_notification_form.management_form }}
+                    {{ push_notification_form.id }}
+                    {{ push_notification_form.channel }}
                 </div>
             </div>
         </div>
