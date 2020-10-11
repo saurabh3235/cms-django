@@ -39,25 +39,46 @@ class PushNotificationView(PermissionRequiredMixin, TemplateView):
             print("loading push notification id")
             print(push_notification.id)
             pn_form = PushNotificationForm(instance=push_notification)
-            PNTFormset = modelformset_factory(PushNotificationTranslation, form=PushNotificationTranslationForm, max_num=num_languages, extra=3)
-            pnt_formset = PNTFormset(queryset=PushNotificationTranslation.objects.filter(push_notification=pn_form.instance).order_by("language"))
+            PNTFormset = modelformset_factory(
+                PushNotificationTranslation,
+                form=PushNotificationTranslationForm,
+                max_num=num_languages,
+                extra=3,
+            )
+            pnt_formset = PNTFormset(
+                queryset=PushNotificationTranslation.objects.filter(
+                    push_notification=pn_form.instance
+                ).order_by("language")
+            )
         else:
             pn_form = PushNotificationForm()
             initial_data = []
             for lang in region.languages:
                 lang_data = {"language": lang.id}
                 initial_data.append(lang_data)
-            PNTFormset = modelformset_factory(PushNotificationTranslation, form=PushNotificationTranslationForm, max_num=num_languages, extra=num_languages)
-            pnt_formset = PNTFormset(queryset=PushNotificationTranslation.objects.none(),initial=initial_data)
+            PNTFormset = modelformset_factory(
+                PushNotificationTranslation,
+                form=PushNotificationTranslationForm,
+                max_num=num_languages,
+                extra=num_languages,
+            )
+            pnt_formset = PNTFormset(
+                queryset=PushNotificationTranslation.objects.none(),
+                initial=initial_data,
+            )
 
-        return render(request, self.template_name, {
-            **self.base_context,
-            'push_notification': push_notification,
-            'push_notification_form': pn_form,
-            'pnt_formset': pnt_formset,
-            'language': language,
-            'languages': region.languages,
-        })
+        return render(
+            request,
+            self.template_name,
+            {
+                **self.base_context,
+                "push_notification": push_notification,
+                "push_notification_form": pn_form,
+                "pnt_formset": pnt_formset,
+                "language": language,
+                "languages": region.languages,
+            },
+        )
 
     # pylint: disable=too-many-branches,unused-argument
     def post(self, request, *args, **kwargs):
@@ -76,7 +97,11 @@ class PushNotificationView(PermissionRequiredMixin, TemplateView):
         language = Language.objects.get(code=kwargs.get("language_code"))
         num_languages = len(region.languages)
 
-        PushNewsFormset = modelformset_factory(PushNotificationTranslation, form=PushNotificationTranslationForm, max_num=num_languages)
+        PushNewsFormset = modelformset_factory(
+            PushNotificationTranslation,
+            form=PushNotificationTranslationForm,
+            max_num=num_languages,
+        )
         pnt_formset = PushNewsFormset(request.POST)
         pn_form = PushNotificationForm(request.POST, instance=push_notification)
         if pn_form.is_valid():
@@ -97,9 +122,9 @@ class PushNotificationView(PermissionRequiredMixin, TemplateView):
             self.template_name,
             {
                 **self.base_context,
-                'push_notification': push_notification,
-                'push_notification_form': pn_form,
-                'pnt_formset': pnt_formset,
+                "push_notification": push_notification,
+                "push_notification_form": pn_form,
+                "pnt_formset": pnt_formset,
                 "language": language,
                 "languages": region.languages,
             },
